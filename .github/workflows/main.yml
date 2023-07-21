@@ -1,0 +1,44 @@
+name: Manual Deploy
+
+on:
+  workflow_dispatch:
+
+# permissions:
+#   contents: read
+
+# concurrency:
+#   group: ${{ github.base_ref }}
+#   cancel-in-progress: true
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Build page with Jekyll
+        uses: paper-spa/pages@v0.0.2
+        with:
+          source: .
+          destination: ./_site
+      - name: Archive build output
+        run: "tar --dereference --directory _site/ -cvf artifact.tar ."
+        working-directory: .
+      - name: Upload artifact
+        uses: actions/upload-artifact@main
+        with:
+          name: github-pages
+          path: ./artifact.tar
+
+  deploy:
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: github-pages
+      url: https://colinsalmcorner.com
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: paper-spa/deploy-pages@main

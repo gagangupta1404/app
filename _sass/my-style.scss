@@ -1,0 +1,44 @@
+@import "_rouge-dark.scss";
+@import "_rouge-light.scss";
+
+@mixin light-mode-code() {
+    --code-bg: rgba(0,0,0,0.166);
+}
+
+@mixin dark-mode-code() {
+    --code-bg: rgba(0,0,0,0.8333);
+}
+
+@media screen {
+    body.light-mode {
+        @include light-mode();
+        @include light-mode-code();        
+        @include rouge-light();
+    }
+
+    body.dark-mode {
+        @include dark-mode();
+        @include dark-mode-code();
+        @include rouge-dark();
+    }
+
+    blockquote {
+        border-left: 0.25rem solid var(--accent-color) !important;
+    }
+}
+
+@media screen and (prefers-color-scheme: dark) {
+    body {
+        @include dark-mode();
+        @include dark-mode-code();
+        @include rouge-dark();
+    }
+
+    blockquote {
+        border-left: 0.25rem solid var(--accent-color) !important;
+    }
+  }
+
+hy-push-state a {
+    text-underline-offset: .2rem;
+}
